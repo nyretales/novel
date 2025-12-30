@@ -47,11 +47,38 @@
             animation: bounce 2s infinite; letter-spacing: 2px; font-size: 0.9rem;
             padding: 10px 20px; border: 1px solid transparent; transition: 0.3s;
         }
+                .scroll-hint {
+            position: absolute;
+            bottom: 120px; /* Diubah dari 40px ke 120px agar naik cukup tinggi */
+            color: var(--accent-mustard);
+            font-family: 'Cinzel Decorative', cursive; 
+            cursor: pointer;
+            animation: bounce 2s infinite; 
+            letter-spacing: 2px; 
+            font-size: 0.9rem;
+            padding: 10px 20px; 
+            border: 1px solid transparent; 
+            transition: 0.3s;
+            
+            /* --- Tambahan Baru untuk Layout Vertikal --- */
+            display: flex;
+            flex-direction: column; /* Menyusun teks dan panah ke bawah */
+            align-items: center;    /* Rata tengah (centering) */
+            gap: 10px;              /* Jarak antara teks dan panah */
+        }
+
         .scroll-hint:hover {
             border-color: var(--accent-mustard);
             background: rgba(225, 173, 1, 0.1);
             text-shadow: 0 0 10px var(--accent-mustard);
         }
+        
+        /* Style khusus untuk panah besar */
+        .big-arrow {
+            font-size: 2rem; /* Ukuran panah diperbesar */
+            color: var(--accent-mustard);
+        }
+
 
         /* --- 3. JUDUL --- */
         .section-title {
@@ -282,10 +309,45 @@
 
     <audio id="bgm-horror" loop><source src="horror.mp3" type="audio/mpeg"></audio>
 
-    <header class="hero-screen">
+        <header class="hero-screen">
         <img src="gambar.png" alt="Logo Penulis" class="main-logo">
+        
         <div class="scroll-hint" onclick="startHorrorExperience()">
-            <i class="fa-solid fa-play"></i> Lihat Kalau Kamu Berani ↓
+            <span id="hint-text"><i class="fa-solid fa-play"></i> LIHAT KALAU KAMU BERANI</span>
+            <i class="fa-solid fa-chevron-down big-arrow"></i>
+                <script>
+        function startHorrorExperience() {
+            const audio = document.getElementById('bgm-horror');
+            // Kita ubah selectornya agar menargetkan SPAN di dalam .scroll-hint
+            const hintTextSpan = document.querySelector('.scroll-hint span'); 
+            const hintBox = document.querySelector('.scroll-hint'); // Parent box untuk animasi
+            
+            if (audio.paused) {
+                audio.volume = 0.3;
+                var playPromise = audio.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Update teks di dalam span saja
+                        hintTextSpan.innerHTML = '<i class="fa-solid fa-volume-high"></i> NOW PLAYING...';
+                        hintBox.style.color = '#fff'; // Ubah warna container
+                        setTimeout(() => {
+                            document.getElementById('about').scrollIntoView({behavior: 'smooth'});
+                        }, 1000);
+                    })
+                    .catch(error => {
+                        console.log("Autoplay dicegah oleh browser, user harus interaksi lagi.");
+                    });
+                }
+            } else {
+                audio.pause();
+                // Kembalikan teks jika dipause
+                hintTextSpan.innerHTML = '<i class="fa-solid fa-play"></i> LIHAT KALAU KAMU BERANI';
+                hintBox.style.color = 'var(--accent-mustard)';
+            }
+        }
+    </script>
+
         </div>
     </header>
 
@@ -411,7 +473,7 @@
 
                         <div class="col-right-content">
                             <p class="synopsis-text">
-                                Mereka memelihara iblis yang hidup dalam tubuh putrinya yang telah mati. Sebuah perjanjian darah yang menuntut tumbal, dan kini mereka harus menanggung segala resikonya...
+                                Mereka setuju untuk memelihara iblis dalam tubuh putrinya yang telah mati agar putrinya hidup kembali. Sebuah perjanjian darah yang menuntut tumbal, dan kini mereka harus menanggung segala resikonya...
                             </p>
                         </div>
                     </div>
@@ -682,7 +744,7 @@
 
                         <div class="col-right-content">
                             <p class="synopsis-text">
-                                Dia dibuang ke dalam sebuah sumur tua setelah diracun oleh suami yang selingkuh dengan pembantunya.
+                                Dia dibuang ke dalam sebuah sumur tua setelah diracun oleh suami yang selingkuh dengan pembantunya. Berhasilkah dia bertahan hidup dan membalaskan dendamnya?
                             </p>
                         </div>
                     </div>
